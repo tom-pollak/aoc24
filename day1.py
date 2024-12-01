@@ -1,6 +1,6 @@
 import numpy as np
 
-with open("assets/day1_p1.txt", "rt") as f:
+with open("assets/day1.txt", "rt") as f:
     inp = np.array([[int(x) for x in line.split()] for line in f.read().splitlines()])
 
 l, r = inp[:, 0], inp[:, 1]
