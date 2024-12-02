@@ -11,13 +11,10 @@ with open("assets/day2.txt", "rt") as f:
 
 
 def check(report: np.ndarray) -> bool:
-    report_asc = np.sort(report)
-    report_desc = np.flip(report_asc)
-    is_sorted = (np.all(report == report_asc) or np.all(report == report_desc)).item()
-    abs_diff = np.abs(report[1:] - report[:-1])
-    is_diff = (abs_diff.min() >= 1) and (abs_diff.max() <= 3)
-    is_safe = is_sorted and is_diff
-    return bool(is_safe)
+    diff = np.diff(report, n=1)
+    is_sorted = np.all(diff >= 0) or np.all(diff <= 0)
+    is_bounds = np.abs(diff).min() >= 1 and np.abs(diff).max() <= 3
+    return bool(is_sorted and is_bounds)
 
 
 n_safe = sum(check(report) for report in reports)
@@ -27,10 +24,10 @@ print(f"Part 1: {n_safe}")
 # ████████████████████████████████████  pt2  █████████████████████████████████████
 
 
-def check_rm(row: np.ndarray) -> bool:
-    for i in range(len(row)):
-        rm_row = np.delete(row, i)
-        if check(rm_row):
+def check_rm(report: np.ndarray) -> bool:
+    for i in range(len(report)):
+        rm_report = np.delete(report, i)
+        if check(rm_report):
             return True
     return False
 
