@@ -1,34 +1,26 @@
-# %%
 import numpy as np
 
-reports = []
+# Shame it's disjoint, otherwise this could be one big ol' matrix
 with open("assets/day2.txt", "rt") as f:
-    for line in f.read().splitlines():
-        vals = [int(x) for x in line.split()]
-        max_length = max(max_length, len(vals))
-        reports.append(vals)
+    reports = [
+        np.array([int(x) for x in line.split()]) for line in f.read().splitlines()
+    ]
 
 
 # ████████████████████████████████████  pt1  █████████████████████████████████████
 
 
-def check(row: np.ndarray) -> bool:
-    row_asc = np.sort(row)
-    row_desc = np.flip(row_asc)
-    is_sorted = (np.all(row == row_asc) or np.all(row == row_desc)).item()
-    abs_diff = np.abs(row[1:] - row[:-1])
+def check(report: np.ndarray) -> bool:
+    report_asc = np.sort(report)
+    report_desc = np.flip(report_asc)
+    is_sorted = (np.all(report == report_asc) or np.all(report == report_desc)).item()
+    abs_diff = np.abs(report[1:] - report[:-1])
     is_diff = (abs_diff.min() >= 1) and (abs_diff.max() <= 3)
     is_safe = is_sorted and is_diff
-    return is_safe
+    return bool(is_safe)
 
 
-n_safe = 0
-for report in reports:
-    row = np.array(report)
-    is_safe = check(row)
-    if is_safe:
-        n_safe += 1
-
+n_safe = sum(check(report) for report in reports)
 print(f"Part 1: {n_safe}")
 
 
@@ -43,11 +35,5 @@ def check_rm(row: np.ndarray) -> bool:
     return False
 
 
-n_safe = 0
-for report in reports:
-    row = np.array(report)
-    is_safe = check_rm(row)
-    if is_safe:
-        n_safe += 1
-
+n_safe = sum(check_rm(report) for report in reports)
 print(f"Part 2: {n_safe}")
