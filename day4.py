@@ -1,3 +1,4 @@
+# %%
 # fmt: off
 import numpy as np
 import torch as t
@@ -9,7 +10,7 @@ from beartype import beartype as typechecker
 
 s2i = {s: i for i, s in enumerate("XMAS")}
 
-with open("assets/day4_b.txt", "r") as f:
+with open("assets/day4.txt", "r") as f:
     inp = np.array([[s2i[c] for c in line] for line in f.read().splitlines()])
 
 q = np.arange(4)
@@ -25,7 +26,7 @@ def count_seq(arr: Int[np.ndarray, "*n m"], pattern: Int[np.ndarray, "d"]) -> in
 
 views = np.concatenate([
     inp, # right
-    np.flip(inp, axis=1), # left
+    np.fliplr(inp), # left
     inp.T, # down
     np.flip(inp.T, axis=1) # up
 ])
@@ -45,14 +46,15 @@ print(f"Part 1: {pt1_answ}")
 
 # ████████████████████████████████████  pt2  █████████████████████████████████████
 
-s2oh = {s: np.eye(4)[i] for i, s in enumerate("XMAS")}
+vocab = np.eye(4).tolist()
+s2one_hot = {s: vocab[i] for i, s in enumerate("XMAS")}
 
-with open("assets/day4_b.txt", "r") as f:
-    inp = t.tensor([[s2oh[c] for c in line] for line in f.read().splitlines()], dtype=t.float32)
+with open("assets/day4.txt", "r") as f:
+    inp = t.tensor([[s2one_hot[c] for c in line] for line in f.read().splitlines()], dtype=t.float32)
 
 
 Z = t.zeros(4).tolist() # blank space
-_, M, A, S = tuple(s2oh.values())
+_, M, A, S = tuple(s2one_hot.values())
 
 # our kernel!
 k = t.tensor([
@@ -65,7 +67,7 @@ sum_to_find = k.sum()
 
 views = t.stack([
     k,
-    k.flip(1),
+    k.fliplr(),
     t.rot90(k, 1, [0,1]),
     t.rot90(k, -1, [0,1]),
 ])
