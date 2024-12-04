@@ -33,15 +33,17 @@ views = np.concatenate([
     np.flip(inp.T, axis=1) # up
 ])
 
-total = count_seq(views, q)
+pt1_answ = count_seq(views, q)
 
-down_right = [np.diagonal(inp, k) for k in range(-n+1, n)] # down right
-down_left = [np.diagonal(np.flip(inp, axis=1), k) for k in range(-n+1, n)] # left
-up_right = [np.diagonal(np.flip(inp, axis=0), k) for k in range(-n+1, n)]  # up right
-up_left = [np.diagonal(np.flip(inp), k) for k in range(-n+1, n)] #  up left
+diagonals = []
+for v_flip in False, True:
+    for h_flip in False, True:
+        arr = np.flip(inp, 0) if v_flip else inp
+        arr = np.flip(arr, 1) if h_flip else arr
+        diagonals.extend([np.diagonal(arr, k) for k in range(-n+1, n)])
 
-for row in down_right + down_left + up_right + up_left:
-    total += count_seq(row, q)
-print(total)
+for row in diagonals:
+    pt1_answ += count_seq(row, q)
+print(f"Part 1: {pt1_answ}")
 
 # %%
