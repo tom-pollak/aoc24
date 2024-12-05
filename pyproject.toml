@@ -12,7 +12,9 @@ dependencies = [
     "torch>=2.5.1",
 ]
 
+[project.optional-dependencies]
+triton = ["triton>=3.1.0"]
+
+
 [dependency-groups]
-dev = [
-    "ipykernel>=6.29.5",
-]
+dev = ["ipykernel>=6.29.5"]
