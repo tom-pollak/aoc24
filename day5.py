@@ -2,15 +2,16 @@ from collections import defaultdict
 from functools import cmp_to_key
 
 with open("assets/day5.txt", "rt") as f:
-    r, updates = tuple(f.read().split("\n\n", maxsplit=1))
-    rules = defaultdict(set)
-    for line in r.splitlines():
-        before, after = line.split("|")
-        rules[int(before)].add(int(after))
-    rules = dict(rules)
-    updates = [
-        [int(x) for x in line.split(",")] for line in updates.splitlines() if line
-    ]
+    r, u = tuple(f.read().split("\n\n", maxsplit=1))
+
+rules: dict[int, set[int]]
+updates: list[list[int]]
+
+rules = defaultdict(set)
+for line in r.splitlines():
+    before, after = line.split("|")
+    rules[int(before)].add(int(after))
+updates = [[int(x) for x in line.split(",")] for line in u.splitlines() if line]
 
 
 # ████████████████████████████████████  pt1  █████████████████████████████████████
