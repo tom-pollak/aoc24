@@ -2,16 +2,16 @@ from collections import defaultdict
 from functools import cmp_to_key
 
 with open("assets/day5.txt", "rt") as f:
-    r, u = tuple(f.read().split("\n\n", maxsplit=1))
+    raw_rules, raw_updates = tuple(f.read().split("\n\n", maxsplit=1))
 
 rules: dict[int, set[int]]
 updates: list[list[int]]
 
 rules = defaultdict(set)
-for line in r.splitlines():
+for line in raw_rules.splitlines():
     before, after = line.split("|")
     rules[int(before)].add(int(after))
-updates = [[int(x) for x in line.split(",")] for line in u.splitlines() if line]
+updates = [[int(x) for x in line.split(",")] for line in raw_updates.splitlines()]
 
 
 # ████████████████████████████████████  pt1  █████████████████████████████████████
@@ -26,13 +26,12 @@ def check(update: list[int]) -> bool:
     return True
 
 
-total = 0
-for update in updates:
-    if check(update):
-        mid = update[len(update) // 2]
-        total += mid
+def get_mid(arr):
+    return arr[len(arr) // 2]
 
-print(f"Part 1: {total}")
+
+pt1 = sum(get_mid(u) for u in updates if check(u))
+print(f"Part 1: {pt1}")
 
 # ████████████████████████████████████  pt2  █████████████████████████████████████
 
@@ -49,11 +48,5 @@ def compare(x, y):
     return 0
 
 
-total = 0
-for update in updates:
-    if not check(update):
-        update.sort(key=compare)
-        mid = update[len(update) // 2]
-        total += mid
-
-print(f"Part 2: {total}")
+pt2 = sum(get_mid(sorted(u, key=compare)) for u in updates if not check(u))
+print(f"Part 2: {pt2}")
